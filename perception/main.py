@@ -1,26 +1,9 @@
 import cv2
 import numpy as np
 import os
-import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
 
 # Load the image
 image = cv2.imread(os.path.join('perception', 'red.png'))
-
-print(image.shape)
-
-mid = image.shape[1] // 2
-
-left_image = image[:, :mid]
-right_image = image[:, mid:]
-
-print(left_image.shape)
-
-"""
-
-Split image into half down the middle
-
-"""
 
 # Convert to RGB (since OpenCV loads in BGR)
 image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -59,14 +42,36 @@ cv2.drawContours(filtered_mask, filtered_contours, -1, (255), thickness=cv2.FILL
 image_contours = image_rgb.copy()
 cv2.drawContours(image_contours, filtered_contours, -1, (0, 255, 0), 2)
 
-# Display the mask and detected contours
-fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-axes[0].imshow(filtered_mask, cmap="gray")
-axes[0].set_title("Binary Mask of Red Cones")
-axes[0].axis("off")
+# Reupdates the contours
+contours = cv2.findContours(filtered_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
-axes[1].imshow(image_contours)
-axes[1].set_title("Detected Contours")
-axes[1].axis("off")
+# Extract all cone points
+points = []
+for contour in contours:
+  for point in contour:
+    points.append(point[0])  # Extract (x, y) coordinates
 
-plt.show()
+points = np.array(points)
+
+# Separate left and right cones
+x_median = np.median(points[:, 0])
+left_cones = points[points[:, 0] < x_median]
+right_cones = points[points[:, 0] >= x_median]
+
+# Fit lines
+left_line = np.polyfit(left_cones[:, 1], left_cones[:, 0], 1)
+right_line = np.polyfit(right_cones[:, 1], right_cones[:, 0], 1)
+
+# Define start/end points for lines
+y_min = 0
+y_max = image.shape[0]
+left_x_min, left_x_max = np.polyval(left_line, [y_min, y_max])
+right_x_min, right_x_max = np.polyval(right_line, [y_min, y_max])
+
+# Draw the boundary lines
+image_lines = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+cv2.line(image_lines, (int(left_x_min), int(y_min)), (int(left_x_max), int(y_max)), (255, 0, 0), 3)
+cv2.line(image_lines, (int(right_x_min), int(y_min)), (int(right_x_max), int(y_max)), (255, 0, 0), 3)
+
+# Saves the image with the drawn boundary lines 
+cv2.imwrite(os.path.join("perception", "answer.png"), cv2.cvtColor(image_lines, cv2.COLOR_RGB2BGR))
