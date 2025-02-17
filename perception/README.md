@@ -1,16 +1,9 @@
-# Wisconsin Autonomous Perception Coding Challenge
+# Wisconsin Autonomous Perception Coding Challenge Submission
 
-This coding challenge is designed to evaluate what you can bring to the table and an opportunity for you to get some hands on experience with the tools we use on the perception team! Our perception software uses OpenCV for much of our image processing. A good understanding of image processing techniques and OpenCV is important for our success. This challenge aims to evaluate your problem-solving approach to computer vision problems.
-
-
-## Challenge Description
-You are tasked to create a perception algorithm that can detect the boundaries of a straight path defined by cones taken by a camera attached to a vehicle, like the image below. Your code should draw boundary lines of the path on the image and save it as a png, "answer.png". 
-
-
-sample answer.png
-:-------------------------:
-![](https://github.com/WisconsinAutonomous/CodingChallenges/blob/master/perception/answer.png)
-
+## Answer Image Output
+Original Image|Processed Image
+:-------------------------:|:-------------------------:
+![](red.png)|![](answer.png)
 
 ## Submission Specification
 - Your code should be written in any language, we recommend Python or C++.
@@ -22,9 +15,22 @@ sample answer.png
     - What did you try and why do you think it did not work.
     - What libraries are used
 
-## Tips
-1. You are allowed to use any resources available to you. Google is your friend!
-2. Some OpenCV tutorials can be found here: https://docs.opencv.org/4.x/d9/df8/tutorial_root.html
-3. Search and learn about image thresholding and clustering
-4. Document as much as you can. We are looking for team members who are good communicators :)
-5. The learning curve can be steep here! We don't want you to get stuck! Feel free to email sdabbara@wisc.edu if you have high-level questions! Please put "[WA]" in the subject or your question may be ignored!
+## Methodolgy
+I first load the image, and convert it to HSV format for better color segmentation. I then filter out the image for red using the two HSV red color ranges. I then remove random red pixels using morphological operations, and extract contours of red images to locate the cones. I then removed further removed small areas of red. After obtaining the coordinates of all cone points, I split the image into two vertical halves (to calculate the least-squares line for each line of cones), and drew the lines onto the image. Finally, I saved the image to 'answer.png'.
+
+## Challenges
+I initially tried to capture all the red colors, thinking it would only capture the cones. However, it ended up capturing parts of the door on the side, which heavily skewed the least-squares line of the left line of cones. To combat this, I ended up tweaking the HSV segments to capture only the red in the cones. While this vastly decreased the amount of non-cone reds detected, there were still splotches of red (particularely with the exit signs and its reflections on the floor) that I was unable to eliminate with just HSV thresholding. Thus, I decided to group all the red points together, and eliminate the smaller red areas (which were the reflections), which would leave the large red areas represented by cones intact. This ended up working, and I was able to isolate a mask that contained only the red points of the cones. 
+
+## Libraries Used
+- **OpenCV** (`cv2`) - To process the image and isolate the red pixels representing cones
+- **NumPy** (`numpy`) - To manipulate arrays and compute aggregate functions (notable mean())
+- **OS** (`os`) - To join files between different directories (to account for different operating systems)
+
+## Repository and Execution
+To run this code, clone the repository and execute:
+
+```bash
+python percepetion/main.py
+```
+
+This will generate `answer.png` containing the detected path boundaries.
