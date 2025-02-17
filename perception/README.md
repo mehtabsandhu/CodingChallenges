@@ -30,7 +30,7 @@ I initially tried to capture all the red colors, thinking it would only capture 
 To run this code, clone the repository and execute:
 
 ```bash
-python percepetion/main.py
+python perception/main.py
 ```
 
 This will generate `answer.png` containing the detected path boundaries.
