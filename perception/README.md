@@ -5,16 +5,6 @@ Original Image|Processed Image
 :-------------------------:|:-------------------------:
 ![](red.png)|![](answer.png)
 
-## Submission Specification
-- Your code should be written in any language, we recommend Python or C++.
-- Please upload your code to a public github repository for us to review
-- Please document your code. The more readable your code is the better you can show your coding skills.
-- Please include a README that contains the following:
-    - answer.png
-    - Methodolgy 
-    - What did you try and why do you think it did not work.
-    - What libraries are used
-
 ## Methodolgy
 I first load the image, and convert it to HSV format for better color segmentation. I then filter out the image for red using the two HSV red color ranges. I then remove random red pixels using morphological operations, and extract contours of red images to locate the cones. I then removed further removed small areas of red. After obtaining the coordinates of all cone points, I split the image into two vertical halves (to calculate the least-squares line for each line of cones), and drew the lines onto the image. Finally, I saved the image to 'answer.png'.
 
