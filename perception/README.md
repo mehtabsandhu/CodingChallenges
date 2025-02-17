@@ -7,9 +7,9 @@ This coding challenge is designed to evaluate what you can bring to the table an
 You are tasked to create a perception algorithm that can detect the boundaries of a straight path defined by cones taken by a camera attached to a vehicle, like the image below. Your code should draw boundary lines of the path on the image and save it as a png, "answer.png". 
 
 
-Original Image            |  sample answer.png
-:-------------------------:|:-------------------------:
-![](https://github.com/WisconsinAutonomous/CodingChallenges/blob/master/perception/red.png)  |  ![](https://github.com/WisconsinAutonomous/CodingChallenges/blob/master/perception/answer.png)
+sample answer.png
+:-------------------------:
+![](https://github.com/WisconsinAutonomous/CodingChallenges/blob/master/perception/answer.png)
 
 
 ## Submission Specification
