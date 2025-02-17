@@ -1,3 +1,3 @@
 # CodingChallenges
 
-Software challenges for us to evaluate potential members and for them to learn what tools we use.
+Please refer to the Perception folder for my perception challenge submission!
